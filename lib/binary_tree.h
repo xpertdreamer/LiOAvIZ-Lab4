@@ -21,10 +21,7 @@ public:
     // Constructor to initialize node with a value
     explicit Node (T value) : data(value), left(nullptr), right(nullptr) {}
     // Destructor
-    ~Node() {
-        delete right;
-        delete left;
-    }
+    ~Node() = default;
 
     // Disable copying
     Node(const Node&) = delete;
@@ -140,6 +137,8 @@ public:
     void print_tree() const {
         print_tree_helper(root, 0);
     }
+
+
 };
 
 #endif //BINARY_TREE_H
