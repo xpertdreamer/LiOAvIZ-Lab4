@@ -13,5 +13,7 @@ int main() {
     std::cout << tree.get_root() << std::endl;
     std::cout << tree.get_root_left() << std::endl;
     std::cout << tree.get_root_right() << std::endl;
+    std::cout << tree.search(3) << std::endl;
+    std::cout << tree.search(5) << std::endl;
     return 0;
 }

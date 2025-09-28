@@ -29,6 +29,13 @@ private:
     // Pointer to the root of the tree
     Node<T>* root;
 
+    // Recursive method to search for a value in the tree
+    bool search_recursive(Node<T>* current, T value) {
+        if (current == nullptr) return false;
+        if (current->data == value) return true;
+        return search_recursive(current->left, value) || search_recursive(current->right, value);
+    }
+
 public:
     // Constructor to initialize the tree
     BinaryTree() : root(nullptr) {}
@@ -68,6 +75,12 @@ public:
             q.push(current->right);
         }
     }
+
+    // Method to search for a value in the tree
+    bool search(T value) {
+        return search_recursive(root, value);
+    }
+
 };
 
 #endif //BINARY_TREE_H
