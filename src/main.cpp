@@ -12,8 +12,18 @@ int main() {
     tree.insert_node(5);
     tree.insert_node(6);
     tree.insert_node(7);
+    tree.insert_node(5);
+    tree.insert_node(5);
+    tree.insert_node(5);
+    tree.insert_node(5);
+    tree.insert_node(5);
 
     tree.print_tree();
     tree.inorder();
+    tree.preorder();
+    std::cout << std::endl;
+    std::cout << tree.count_entries(3);
+    std::cout << std::endl;
+    tree.get_path(5);
     return 0;
 }

@@ -62,6 +62,23 @@ private:
         }
     }
 
+    // Method for Recursive preorder traversal of the tree
+    void preorderRecursive(Node<T>* node) {
+        if (node != nullptr) {
+            std::cout << node->data << " ";
+            preorderRecursive(node->left);
+            preorderRecursive(node->right);
+        }
+    }
+
+    void count_entries_helper(Node<T>* r, int& counter, const T& value) const {
+        if (r == nullptr) return;
+
+        if (value == r->data) ++counter;
+        count_entries_helper(r->right, counter, value);
+        count_entries_helper(r->left, counter, value);
+    }
+
     void print_tree_helper(Node<T>* r, const int level) const {
         if (r == nullptr) return;
 
@@ -72,6 +89,18 @@ private:
 
         std::cout << r->data << std::endl;
         print_tree_helper(r->left, level + 1);
+    }
+
+    bool find_path(Node<T>* r, T target) const {
+        if (r == nullptr) return false;
+
+        std::cout << r->data << " ";
+
+        if (r->data == target) return true;
+
+        if (find_path(r->left, target) || find_path(r->right, target)) return true;
+
+        return false;
     }
 
 public:
@@ -133,12 +162,30 @@ public:
         std::cout << std::endl;
     }
 
+    // Method to perform preorder traversal of the tree
+    void preorder() {
+        preorderRecursive(root);
+        std::cout << std::endl;
+    }
+
     // Method to print the tree
     void print_tree() const {
         print_tree_helper(root, 0);
     }
 
+    // Method of calculating the number of entries of a given element into a tree.
+    int count_entries(const T& value) const {
+        int n = 0;
+        count_entries_helper(root, n, value);
+        return n;
+    }
 
+
+    // Method to search a path to a value in the tree
+    void get_path(T value) const {
+        if (!find_path(root, value)) std::cout << "Не найден" << std::endl;
+        else std::cout << std::endl;
+    }
 };
 
 #endif //BINARY_TREE_H
