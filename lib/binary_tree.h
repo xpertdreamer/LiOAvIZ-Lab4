@@ -66,7 +66,7 @@ private:
     }
 
     void print_tree_helper(Node<T>* r, const int level) const {
-        if (r == nullptr) throw std::runtime_error("Root node is null");
+        if (r == nullptr) return;
 
         print_tree_helper(r->right, level + 1);
         for (int i = 0; i < level; i++) {
