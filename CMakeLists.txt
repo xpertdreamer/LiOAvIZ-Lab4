@@ -9,12 +9,15 @@ if(POLICY CMP0077)
     cmake_policy(SET CMP0077 NEW)
 endif()
 
+add_subdirectory(lib)
+
 add_executable(LiOAvIZ_Lab4
         src/main.cpp
-        src/binary_tree.h
 )
 
 target_include_directories(LiOAvIZ_Lab4 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+target_link_libraries(LiOAvIZ_Lab4 BinaryTree)
 
 target_compile_options(LiOAvIZ_Lab4 PRIVATE
         $<$<CXX_COMPILER_ID:GNU,Clang>:-Wall -Wextra -Wpedantic -Wshadow>
