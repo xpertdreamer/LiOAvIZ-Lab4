@@ -11,11 +11,8 @@ endif()
 
 add_executable(LiOAvIZ_Lab4
         src/main.cpp
+        src/binary_tree.h
 )
-
-#target_link_libraries(LiOAvIZ_Lab4 PRIVATE
-#
-#)
 
 target_include_directories(LiOAvIZ_Lab4 PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
