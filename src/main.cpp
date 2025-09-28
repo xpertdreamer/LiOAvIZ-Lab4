@@ -9,11 +9,13 @@ int main() {
     tree.insert_node(1);
     tree.insert_node(2);
     tree.insert_node(3);
+    tree.insert_node(4);
+    tree.insert_node(5);
+    tree.insert_node(6);
+    tree.insert_node(7);
 
     std::cout << tree.get_root() << std::endl;
-    std::cout << tree.get_root_left() << std::endl;
-    std::cout << tree.get_root_right() << std::endl;
-    std::cout << tree.search(3) << std::endl;
-    std::cout << tree.search(5) << std::endl;
+
+    tree.print_tree();
     return 0;
 }
