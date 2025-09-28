@@ -49,8 +49,9 @@ private:
     bool search_recursive(Node<T>* current, T value) {
         if (current == nullptr) return false;
         if (current->data == value) return true;
-        return search_recursive(current->left, value) ||
-            search_recursive(current->right, value);
+
+        if (value < current->data) return search_recursive(current->left, value);
+        return search_recursive(current->right, value);
     }
 
     // Method for Recursive inorder traversal of the tree
@@ -75,8 +76,9 @@ private:
         if (r == nullptr) return;
 
         if (value == r->data) ++counter;
-        count_entries_helper(r->right, counter, value);
-        count_entries_helper(r->left, counter, value);
+
+        if (value < r->data) count_entries_helper(r->left, counter, value);
+        else count_entries_helper(r->right, counter, value);
     }
 
     void print_tree_helper(Node<T>* r, const int level) const {
@@ -98,11 +100,16 @@ private:
 
         if (r->data == target) return true;
 
-        if (find_path(r->left, target) || find_path(r->right, target)) return true;
-
-        return false;
+        if (target < r->data) return find_path(r->left, target);
+        return find_path(r->right, target);
     }
 
+    Node<T>* insert_recursive(Node<T>* node, T value) {
+        if (node == nullptr) return new Node<T>(value);
+        if (value < node->data) node->left = insert_recursive(node->left, value);
+        else if (value > node->data) node->right = insert_recursive(node->right, value);
+        return node;
+    }
 public:
     // Constructor to initialize the tree
     BinaryTree() : root(nullptr) {}
@@ -121,34 +128,10 @@ public:
     Node<T> *get_root() { return root; }
     const Node<T> *get_root() const { return root; }
 
-    // Methods to insert node in the binary tree
+    // Methods to insert node in the binary tree (excluding the same elements)
     void insert_node(T value) {
-        auto newNode = new Node<T>(value);
-
-        if (root == nullptr) {
-            root = newNode;
-            return;
-        }
-
-        std::queue<Node<T>*> q;
-        q.push(root);
-
-        while (!q.empty()) {
-            auto current = q.front();
-            q.pop();
-
-            if (current->left == nullptr) {
-                current->left = newNode;
-                return;
-            }
-            q.push(current->left);
-
-            if (current->right == nullptr) {
-                current->right = newNode;
-                return;
-            }
-            q.push(current->right);
-        }
+        if (search(value)) return;
+        root = insert_recursive(root, value);
     }
 
     // Method to search for a value in the tree
@@ -170,7 +153,7 @@ public:
 
     // Method to print the tree
     void print_tree() const {
-        print_tree_helper(root, 0);
+        print_tree_helper(root,0);
     }
 
     // Method of calculating the number of entries of a given element into a tree.
