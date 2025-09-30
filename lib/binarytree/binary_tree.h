@@ -77,8 +77,8 @@ private:
 
         if (value == r->data) ++counter;
 
-        if (value < r->data) count_entries_helper(r->left, counter, value);
-        else count_entries_helper(r->right, counter, value);
+        count_entries_helper(r->left, counter, value);
+        count_entries_helper(r->right, counter, value);
     }
 
     void print_tree_helper(Node<T>* r, const int level) const {
@@ -93,15 +93,23 @@ private:
         print_tree_helper(r->left, level + 1);
     }
 
-    bool find_path(Node<T>* r, T target) const {
+    bool find_path(Node<T>* r, T target, std::vector<T>& current_path) const {
         if (r == nullptr) return false;
 
-        std::cout << r->data << " ";
+        bool found_any = false;
+        current_path.push_back(r->data);
 
-        if (r->data == target) return true;
+        if (r->data == target) {
+            for (const auto& val : current_path) std::cout << val << " ";
+            std::cout << std::endl;
+            found_any = true;
+        }
 
-        if (target < r->data) return find_path(r->left, target);
-        return find_path(r->right, target);
+        const bool left = find_path(r->left, target, current_path);
+        const bool right = find_path(r->right, target, current_path);
+
+        current_path.pop_back();
+        return found_any || left || right;
     }
 
     Node<T>* insert_recursive_repeat(Node<T>* node, T value) {
@@ -178,8 +186,9 @@ public:
 
     // Method to search a path to a value in the tree
     void get_path(T value) const {
-        if (!find_path(root, value)) std::cout << "Не найден" << std::endl;
-        else std::cout << std::endl;
+        std::vector<T> current_path;
+
+        if (const bool found = find_path(root, value, current_path); !found) throw std::runtime_error("Not found");
     }
 };
 

@@ -74,7 +74,7 @@ namespace BinaryTreePlayground {
 
         // Search for value in tree and record operation with result
         bool search(const T &value) {
-            bool result = tree_->search(value);
+            const bool result = tree_->search(value);
             add_to_history("search " + value_to_string(value) + " -> " + (result ? "found" : "not found"));
             return result;
         }
@@ -240,9 +240,9 @@ namespace BinaryTreePlayground {
                     }
                 },
                 // Perform inorder traversal
-                {"inorder", [this](std::istringstream &iss) { handle_inorder(); }},
+                {"inorder", [this](std::istringstream&) { handle_inorder(); }},
                 // Perform preorder traversal
-                {"preorder", [this](std::istringstream &iss) { handle_preorder(); }},
+                {"preorder", [this](std::istringstream &) { handle_preorder(); }},
                 // Count occurrences of value
                 {
                     "count", [this](std::istringstream &iss) {
@@ -260,27 +260,27 @@ namespace BinaryTreePlayground {
                     }
                 },
                 // Print tree structure
-                {"print", [this](std::istringstream &iss) { handle_print(); }},
+                {"print", [this](std::istringstream &) { handle_print(); }},
                 // Clear current tree
-                {"clear", [this](std::istringstream &iss) { handle_clear(); }},
+                {"clear", [this](std::istringstream &) { handle_clear(); }},
                 // List all available trees
-                {"list", [this](std::istringstream &iss) { handle_list(); }},
+                {"list", [this](std::istringstream &) { handle_list(); }},
                 // Check if current tree is empty
-                {"empty", [this](std::istringstream &iss) { handle_empty(); }},
+                {"empty", [this](std::istringstream &) { handle_empty(); }},
                 // Get size of current tree
-                {"size", [this](std::istringstream &iss) { handle_size(); }},
+                {"size", [this](std::istringstream &) { handle_size(); }},
                 // Show statistics of current tree
-                {"stats", [this](std::istringstream &iss) { handle_stats(); }},
+                {"stats", [this](std::istringstream &) { handle_stats(); }},
                 // Show command history
-                {"history", [this](std::istringstream &iss) { handle_history(); }},
+                {"history", [this](std::istringstream &) { handle_history(); }},
                 // Show operation history for current tree
-                {"treehistory", [this](std::istringstream &iss) { handle_tree_history(); }},
+                {"treehistory", [this](std::istringstream &) { handle_tree_history(); }},
                 // Toggle colored output
-                {"colors", [this](std::istringstream &iss) { handle_colors(); }},
+                {"colors", [this](std::istringstream &) { handle_colors(); }},
                 // Show help information
-                {"help", [this](std::istringstream &iss) { handle_help(); }},
+                {"help", [this](std::istringstream &) { handle_help(); }},
                 // Show help information (alias)
-                {"?", [this](std::istringstream &iss) { handle_help(); }}
+                {"?", [this](std::istringstream &) { handle_help(); }}
             };
         }
 
@@ -378,8 +378,8 @@ namespace BinaryTreePlayground {
         // Handle value counting
         void handle_count(const T &value) {
             auto tree = get_current_tree();
-            int count = tree->count_entries(value);
-            std::string message = "Value '" + value_to_string(value) + "' appears " +
+            const int count = tree->count_entries(value);
+            const std::string message = "Value '" + value_to_string(value) + "' appears " +
                            std::to_string(count) + " time(s) in the tree";
             println_colored(message, Colors::CYAN);
         }
@@ -388,7 +388,7 @@ namespace BinaryTreePlayground {
         void handle_path(const T &value) {
             auto tree = get_current_tree();
             println_colored("Path to '" + value_to_string(value) + "': ", Colors::CYAN);
-            std::string result = tree->get_path(value);
+            const std::string result = tree->get_path(value);
             std::cout << result;
         }
 
@@ -437,8 +437,8 @@ namespace BinaryTreePlayground {
         // Handle empty check
         void handle_empty() {
             auto tree = get_current_tree();
-            std::string result = tree->empty() ? "empty" : "not empty";
-            std::string color = tree->empty() ? Colors::YELLOW : Colors::GREEN;
+            const std::string result = tree->empty() ? "empty" : "not empty";
+            const std::string color = tree->empty() ? Colors::YELLOW : Colors::GREEN;
             println_colored(result, color);
         }
 
@@ -480,7 +480,7 @@ namespace BinaryTreePlayground {
         // Handle color output toggle
         void handle_colors() {
             show_colors_ = !show_colors_;
-            std::string status = show_colors_ ? "enabled" : "disabled";
+            const std::string status = show_colors_ ? "enabled" : "disabled";
             println_colored("Colors " + status, Colors::GREEN);
         }
 
@@ -530,7 +530,7 @@ namespace BinaryTreePlayground {
 
             std::cout << Colors::BOLD << "\nExamples:" << Colors::RESET << std::endl;
             std::cout << "  create mytree           " << Colors::YELLOW << "# Create tree named 'mytree'" << Colors::RESET << std::endl;
-            std::cout << "  insert 50               " << Colors::YELLOW << "# Insert value 50" << Colors::RESET << std::endl;
+            std::cout << "  insert 50 1             " << Colors::YELLOW << "# Insert value 50 with repeat" << Colors::RESET << std::endl;
             std::cout << "  stats                   " << Colors::YELLOW << "# Show tree statistics" << Colors::RESET << std::endl;
             std::cout << Colors::BOLD << "========================================" << Colors::RESET << std::endl;
         }
