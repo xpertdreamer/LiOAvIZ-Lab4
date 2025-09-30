@@ -67,8 +67,8 @@ namespace BinaryTreePlayground {
         }
 
         // Insert value into the tree and record operation
-        void insert(const T &value) {
-            tree_->insert_node(value);
+        void insert(const T &value, bool& repeat) {
+            tree_->insert_node(value, repeat);
             add_to_history("insert " + value_to_string(value));
         }
 
@@ -226,8 +226,9 @@ namespace BinaryTreePlayground {
                 {
                     "insert", [this](std::istringstream &iss) {
                         T value;
-                        if (!(iss >> value)) throw std::runtime_error("Invalid value");
-                        handle_insert(value);
+                        bool repeat;
+                        if (!(iss >> value) || !(iss >> repeat)) throw std::runtime_error("Invalid value");
+                        handle_insert(value, repeat);
                     }
                 },
                 // Search for value in current tree
@@ -335,9 +336,9 @@ namespace BinaryTreePlayground {
         }
 
         // Handle value insertion
-        void handle_insert(const T &value) {
+        void handle_insert(const T &value, bool& repeat) {
             auto tree = get_current_tree();
-            tree->insert(value);
+            tree->insert(value, repeat);
             println_colored("✓ Inserted: " + value_to_string(value), Colors::GREEN);
         }
 

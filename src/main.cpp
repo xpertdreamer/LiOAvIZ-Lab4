@@ -47,17 +47,17 @@ int main() {
     //         break;
     //     }
     // }
-#define MIN 1
-#define MAX 40
-    srand(time(nullptr));
-    BinaryTree<int> tree;
-    for (int i = 0; i < 30; i++) {
-        tree.insert_node(MIN + rand() % (MAX - MIN + 1), true);
-    }
-    tree.print_tree();
-    tree.preorder();
-    tree.inorder();
-    tree.get_path(10);
+// #define MIN 1
+// #define MAX 40
+//     srand(time(nullptr));
+//     BinaryTree<int> tree;
+//     for (int i = 0; i < 30; i++) {
+//         tree.insert_node(MIN + rand() % (MAX - MIN + 1), true);
+//     }
+//     tree.print_tree();
+//     tree.preorder();
+//     tree.inorder();
+//     tree.get_path(10);
 
 
     return 0;
