@@ -104,12 +104,20 @@ private:
         return find_path(r->right, target);
     }
 
+    Node<T>* insert_recursive_repeat(Node<T>* node, T value) {
+        if (node == nullptr) return new Node<T>(value);
+        if (value <= node->data) node->left = insert_recursive_repeat(node->left, value);
+        else node->right = insert_recursive_repeat(node->right, value);
+        return node;
+    }
+
     Node<T>* insert_recursive(Node<T>* node, T value) {
         if (node == nullptr) return new Node<T>(value);
         if (value < node->data) node->left = insert_recursive(node->left, value);
         else if (value > node->data) node->right = insert_recursive(node->right, value);
         return node;
     }
+
 public:
     // Constructor to initialize the tree
     BinaryTree() : root(nullptr) {}
@@ -129,9 +137,13 @@ public:
     const Node<T> *get_root() const { return root; }
 
     // Methods to insert node in the binary tree (excluding the same elements)
-    void insert_node(T value) {
-        if (search(value)) return;
-        root = insert_recursive(root, value);
+    void insert_node(T value, const bool repeat) {
+        if (!repeat) {
+            if (search(value)) return;
+            root = insert_recursive(root, value);
+            return;
+        }
+        root = insert_recursive_repeat(root, value);
     }
 
     // Method to search for a value in the tree
