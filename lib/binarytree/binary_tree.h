@@ -126,6 +126,15 @@ private:
         return node;
     }
 
+    int height_recursive(Node<T>* node) const {
+        if (node == nullptr) return -1;
+        const int left_height = height_recursive(node->left);
+        const int right_height = height_recursive(node->right);
+
+        if (left_height > right_height) return left_height + 1;
+        return right_height + 1;
+    }
+
 public:
     // Constructor to initialize the tree
     BinaryTree() : root(nullptr) {}
@@ -183,6 +192,10 @@ public:
         return n;
     }
 
+    void find_levels() const{
+        std::cout << "Min level: 0" << std::endl;
+        std::cout << "Max level: " << height_recursive(root) << std::endl;
+    }
 
     // Method to search a path to a value in the tree
     void get_path(T value) const {
