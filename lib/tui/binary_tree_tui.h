@@ -126,6 +126,15 @@ namespace BinaryTreePlayground {
             return buffer.str();
         }
 
+        std::string find_level() {
+            const std::stringstream buffer;
+            std::streambuf* old = std::cout.rdbuf(buffer.rdbuf());
+            tree_->find_levels();
+            std::cout.rdbuf(old);
+            add_to_history("find level");
+            return buffer.str();
+        }
+
         // Check if tree is empty
         [[nodiscard]] bool empty() const {
             return tree_->get_root() == nullptr;
@@ -153,7 +162,9 @@ namespace BinaryTreePlayground {
             std::cout << Colors::CYAN << "=== Tree Statistics ===" << Colors::RESET << std::endl;
             std::cout << "Root value: " << Colors::BOLD << root->data << Colors::RESET << std::endl;
             std::cout << "Total nodes: " << Colors::BOLD << count_nodes(root) << Colors::RESET << std::endl;
-            std::cout << "Tree height: " << Colors::BOLD << calculate_height(root) << Colors::RESET << std::endl;
+            std::cout << Colors::BOLD;
+            tree_->find_levels();
+            std::cout << Colors::RESET;
             std::cout << "Min value: " << Colors::BOLD << find_min(root) << Colors::RESET << std::endl;
             std::cout << "Max value: " << Colors::BOLD << find_max(root) << Colors::RESET << std::endl;
         }
@@ -163,12 +174,6 @@ namespace BinaryTreePlayground {
         int count_nodes(const Node<T>* node) const {
             if (!node) return 0;
             return 1 + count_nodes(node->left) + count_nodes(node->right);
-        }
-
-        // Calculate height of subtree
-        int calculate_height(const Node<T>* node) const {
-            if (!node) return 0;
-            return 1 + std::max(calculate_height(node->left), calculate_height(node->right));
         }
 
         // Find minimum value in subtree
@@ -231,6 +236,15 @@ namespace BinaryTreePlayground {
                         handle_insert(value, repeat);
                     }
                 },
+                // Insert value into current tree (alias)
+                {
+                    "+", [this](std::istringstream &iss) {
+                        T value;
+                        bool repeat;
+                        if (!(iss >> value) || !(iss >> repeat)) throw std::runtime_error("Invalid value");
+                        handle_insert(value, repeat);
+                    }
+                },
                 // Search for value in current tree
                 {
                     "search", [this](std::istringstream &iss) {
@@ -261,6 +275,8 @@ namespace BinaryTreePlayground {
                 },
                 // Print tree structure
                 {"print", [this](std::istringstream &) { handle_print(); }},
+                // Print levels of subtree
+                {"levels", [this](std::istringstream &) { handle_get_level(); }},
                 // Clear current tree
                 {"clear", [this](std::istringstream &) { handle_clear(); }},
                 // List all available trees
@@ -403,6 +419,17 @@ namespace BinaryTreePlayground {
             }
         }
 
+        // Handle level display
+        void handle_get_level() {
+            auto tree = get_current_tree();
+            tree->find_level();
+            if (const std::string result = tree->find_level(); result.empty()) {
+                println_colored("(empty)", Colors::YELLOW);
+            } else {
+                std::cout << result;
+            }
+        }
+
         // Handle tree clearing
         void handle_clear() {
             auto tree = get_current_tree();
@@ -514,6 +541,7 @@ namespace BinaryTreePlayground {
             std::cout << "  clear                   - Clear current tree" << std::endl;
 
             std::cout << Colors::BOLD << "\nTree Analysis:" << Colors::RESET << std::endl;
+            std::cout << "  levels                  - Print min and max levels of subtree" << std::endl;
             std::cout << "  inorder                 - Inorder traversal" << std::endl;
             std::cout << "  preorder                - Preorder traversal" << std::endl;
             std::cout << "  print                   - Print tree structure" << std::endl;
