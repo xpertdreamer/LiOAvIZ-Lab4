@@ -5,7 +5,9 @@
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 #include <iostream>
-#include <queue>
+#include <vector>
+#include <stdexcept>
+#include <climits>
 
 // Template class for node of a Binary tree
 template<typename T>
@@ -72,13 +74,20 @@ private:
         }
     }
 
-    void count_entries_helper(Node<T>* r, int& counter, const T& value) const {
+    // Helper method to count entries and find min/max levels
+    void count_entries_helper(Node<T>* r, int& counter, const T& value, int currentLevel, int& minLevel, int& maxLevel) const {
         if (r == nullptr) return;
 
-        if (value == r->data) ++counter;
+        // Update current level
+        if (value == r->data) {
+            ++counter;
+            if (currentLevel < minLevel) minLevel = currentLevel;
+            if (currentLevel > maxLevel) maxLevel = currentLevel;
+        }
 
-        count_entries_helper(r->left, counter, value);
-        count_entries_helper(r->right, counter, value);
+        // Recursively search in left and right subtrees
+        count_entries_helper(r->left, counter, value, currentLevel + 1, minLevel, maxLevel);
+        count_entries_helper(r->right, counter, value, currentLevel + 1, minLevel, maxLevel);
     }
 
     void print_tree_helper(Node<T>* r, const int level) const {
@@ -93,20 +102,25 @@ private:
         print_tree_helper(r->left, level + 1);
     }
 
-    bool find_path(Node<T>* r, T target, std::vector<T>& current_path) const {
+    // Modified to track levels of found elements
+    bool find_path(Node<T>* r, T target, std::vector<T>& current_path, int& minLevel, int& maxLevel) const {
         if (r == nullptr) return false;
 
         bool found_any = false;
         current_path.push_back(r->data);
 
         if (r->data == target) {
+            const int currentLevel = current_path.size() - 1;
+            if (currentLevel < minLevel) minLevel = currentLevel;
+            if (currentLevel > maxLevel) maxLevel = currentLevel;
+
             for (const auto& val : current_path) std::cout << val << " ";
             std::cout << std::endl;
             found_any = true;
         }
 
-        const bool left = find_path(r->left, target, current_path);
-        const bool right = find_path(r->right, target, current_path);
+        const bool left = find_path(r->left, target, current_path, minLevel, maxLevel);
+        const bool right = find_path(r->right, target, current_path, minLevel, maxLevel);
 
         current_path.pop_back();
         return found_any || left || right;
@@ -126,10 +140,11 @@ private:
         return node;
     }
 
-    int height_recursive(Node<T>* node) const {
+    int height_recursive(Node<T>* node, T value, const bool util) const {
         if (node == nullptr) return -1;
-        const int left_height = height_recursive(node->left);
-        const int right_height = height_recursive(node->right);
+        if (node->data == value && util == true ) return -1;
+        const int left_height = height_recursive(node->left, value, util);
+        const int right_height = height_recursive(node->right, value, util);
 
         if (left_height > right_height) return left_height + 1;
         return right_height + 1;
@@ -187,21 +202,31 @@ public:
 
     // Method of calculating the number of entries of a given element into a tree.
     int count_entries(const T& value) const {
-        int n = 0;
-        count_entries_helper(root, n, value);
-        return n;
+        int counter = 0;
+        int minLevel = INT_MAX;
+        int maxLevel = -1;
+        count_entries_helper(root, counter, value, 0, minLevel, maxLevel);
+        std::cout << "Min level: " << minLevel << std::endl;
+        std::cout << "Max level: " << maxLevel << std::endl;
+        return counter;
     }
 
     void find_levels() const{
         std::cout << "Min level: 0" << std::endl;
-        std::cout << "Max level: " << height_recursive(root) << std::endl;
+        std::cout << "Max level: " << height_recursive(root, 0, 0) << std::endl;
     }
 
     // Method to search a path to a value in the tree
     void get_path(T value) const {
         std::vector<T> current_path;
+        int minLevel = INT_MAX;
+        int maxLevel = -1;
 
-        if (const bool found = find_path(root, value, current_path); !found) throw std::runtime_error("Not found");
+        if (const bool found = find_path(root, value, current_path, minLevel, maxLevel); !found) {
+            throw std::runtime_error("Not found");
+        }
+        std::cout << "Min level: " << minLevel << std::endl;
+        std::cout << "Max level: " << maxLevel << std::endl;
     }
 };
 
