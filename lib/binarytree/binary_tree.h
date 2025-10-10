@@ -171,7 +171,6 @@ public:
     // Methods to insert node in the binary tree (excluding the same elements)
     void insert_node(T value, const bool repeat) {
         if (!repeat) {
-            if (search(value)) return;
             root = insert_recursive(root, value);
             return;
         }
